@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&family=Nanum+Gothic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="static/css/style.css">
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 </head>
 <body>
@@ -18,24 +18,28 @@
     </header>
     <main>
         <div class="con_logo">
-            <img src="img/logo.png" alt="로고">
+            <img src="static/img/logo.png" alt="로고">
         </div>
+        
         <div class="content">
            
             <!-- <input type="file" id="file" multiple accept="image/jpeg,image/jpg,image/png"> -->
             <section>
 
                 <DIV id="dropzone">
-                    <FORM class="c_drop dropzone needsclick" id="demo-upload" action="/upload-files" enctype="multipart/form-data">
+                    <FORM class="c_drop dropzone needsclick" id="demo-upload" method="post" action="/upload" enctype="multipart/form-data" onsubmit="return uploadFiles()">
                       <DIV class="dz-message needsclick">    
                         Drop files here or click to upload.<BR>
                         <SPAN class="note needsclick">(This is just a demo dropzone. Selected 
                         files are <STRONG>not</STRONG> actually uploaded.)</SPAN>
                       </DIV>
+                      
+                    
                     </FORM>
-                    <button type="submit" form="demo-upload">upload</button>
+                    
 
                   </DIV>
+                  <button type="submit" class="upload-button" onclick="uploadFiles()" >upload</button>
             </section>
 
             <DIV id="preview-template" style="display: none;">
@@ -71,6 +75,7 @@
                 </div>
 
         </div>
+        
     </main>
     <script>
    
@@ -99,6 +104,34 @@
             }
         
         });
+
+        function uploadFiles() {
+            // Dropzone가 관리하는 파일들을 FormData에 추가
+            var formData = new FormData();
+            dropzone.files.forEach(function(file) {
+                formData.append('files', file);
+            });
+
+            // 서버로 파일 업로드 요청
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                return response.json();  // 응답을 JSON으로 변환
+            }).then(data => {
+                if (data.session_id) {
+                    // 세션 ID를 포함한 URL로 리다이렉트
+                    window.location.href = "/uploaded_images/" + data.session_id;
+                } else {
+                    console.error('Session ID is missing in the response');
+                }
+            }).catch(error => {
+                console.error('Error during file upload:', error);
+            });
+
+            return false;
+        }
+
         
         // Now fake the file upload, since GitHub does not handle file uploads
         // and returns a 404

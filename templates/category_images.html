@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category_name }} Images</title>
+    <!-- 스타일시트 링크 -->
+</head>
+<body>
+    <h1>{{ category_name }} Images</h1>
+    <div class="image-grid">
+        {% for image_url in images %}
+            <img src="{{ image_url }}" alt="Image" class="category-image" style="width: 100px;">
+        {% endfor %}
+    </div>
+    <!-- 그리드 스타일 정의 -->
+</body>
+</html>

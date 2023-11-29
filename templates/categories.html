@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Categories</title>
+    <!-- 나머지 head 요소 -->
+</head>
+<body>
+    <div>
+        <h1>카테고리</h1>
+        {% for category, image_url in categories_info.items() %}
+        <div>
+            <h2>{{ category }}</h2>
+            <!-- 이미지 클릭 시 /category_images/{category}/{session_id}로 이동 -->
+            <a href="/category_images/{{ category }}/{{ session_id }}">
+                <img src="{{ image_url }}" alt="{{ category }}" style="width: 100px;">
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

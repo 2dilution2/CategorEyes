@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ... 나머지 head 요소 ... -->
+        <style>
+            /* ... 스타일 정의 ... */
+        </style>
+    </head>
+    <body>
+        <button onclick="redirectToCategories()">Classification</button>
+        <div class="image-container">
+            {% for image_url in images %}
+                <img src="{{ image_url }}" alt="Image">
+            {% endfor %}
+        </div>
+    
+        <script>
+            // session_id를 Jinja2 템플릿에서 가져옵니다.
+            var sessionID = "{{ session_id }}";
+    
+            function redirectToCategories() {
+                // sessionID를 URL에 포함하여 이동
+                window.location.href = `/categories/${sessionID}`;
+            }
+        </script>
+    </body>
+</html>

@@ -1,64 +1,63 @@
-
-*{
-    
+* {
     padding: 0;
     margin: 0 auto;
-    
 }
-a{
+
+a {
     text-decoration: none;
     color: black;
 }
 
 /* header */
-
-header{
+header {
     background: #98B1F6;
     height: 70px;
 }
 
-.logo{
+.logo {
     text-align: center;
     padding-block: 15px;
 }
 
-
-
 /* main */
-
-main{
+main {
     width: 100%;
-    height: 90vh;
+    height: 100vh;
     position: relative;
 }
 
-.con_logo{
+
+.con_logo {
     position: absolute;
     top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.content{
+.content {
     position: absolute;
-    top: 40%;
+    top: calc(50% + 50px); /* 필요에 따라 top 속성 조절 */
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 2000px;
+    /* max-height: calc(100% - (50% + 50px)); */
+    height: 500px;
+    /* border: 1px solid #ddd; */
 }
-.content input{
-    width: 40vw;
+.content input {
+    width: 100%;
     height: 50px;
     border-radius: 10px;
     padding-left: 10px;
 }
-
-
-
-.content button{
+.upload-button {
     position: absolute;
-    right: 50%;
-    transform: translate(50%, -65%);
-    width: 80px;
-    height: 30px;
+    bottom: 20px; /* 원하는 여백으로 조절 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    width: 120px;
+    height: 40px;
     border-radius: 10px;
     background: #5F83B9;
     border: none;
@@ -68,22 +67,62 @@ main{
     cursor: pointer;
 }
 
+
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-container img {
+    margin: 10px;
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.image-container img:hover {
+    border: 1px solid #4CAF50;
+}
+
 .dropzone {
-    /* position: absolute;
-    top: 100px; */
     background: white;
     border-radius: 5px;
     border: 2px dashed rgb(0, 135, 247);
     border-image: none;
-    max-width: 1000px;
+    max-width: 2000px;
     margin-left: auto;
     margin-right: auto;
+    overflow-y: auto;
+    height: 400px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
-.dz-remove{
+.dz-remove {
     background: red;
     width: 50px;
     border-radius: 25px;
     color: white;
     margin-top: 10px;
+}
+
+.dropzone .dz-message {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    /* transform: translate(-50%, -50%); */
+    text-align: center;
+}
+
+.dropzone .dz-message .note {
+    font-size: 14px;
+    color: #888;
+    /* 추가적인 스타일이 필요한 경우 여기에 추가 */
 }
