@@ -10,7 +10,9 @@
         {% for category, image_url in categories_info.items() %}
         <div>
             <h2>{{ category }}</h2>
-            <img src="{{ image_url }}" alt="{{ category }}" style="width: 100px;">
+            <a href="/category_images/{{ category }}/{{ session_id }}">
+                <img src="{{ image_url }}" alt="{{ category }}" style="width: 100px;">
+            </a>
             <!-- 다운로드 버튼 추가 -->
             <button onclick="downloadCategory('{{ category }}')">Download {{ category }}</button>
         </div>
