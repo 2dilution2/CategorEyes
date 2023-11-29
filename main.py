@@ -17,7 +17,6 @@ from datetime import datetime, timedelta
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
-from datetime import datetime, timedelta
 import uuid
 from base64 import b64encode
 
@@ -44,7 +43,7 @@ model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
 # 카테고리 라벨
-labels = ["a photo of a person", "a landscape photo", "a photo of an animal", "a photo of food", "a photo of a document", "a photo of something else"]
+labels = ["a photo of human", "a landscape photo", "a photo of an animal", "a photo of food", "a photo of a document", "a photo of something else"]
 
 # SessionMiddlewareKey 환경 변수 불러오기
 SESSION_KEY = os.getenv("SessionMiddlewareKey")
