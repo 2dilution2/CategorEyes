@@ -8,11 +8,18 @@
 </head>
 <body>
     <h1>{{ category_name }} Images</h1>
+    <!-- 다운로드 버튼 추가 -->
+    <button onclick="downloadCategory('{{ category_name }}')">Download {{ category_name }}</button>
     <div class="image-grid">
         {% for image_url in images %}
-            <img src="{{ image_url }}" alt="Image" class="category-image" style="width: 100px;">
+            <img src="{{ image_url }}" alt="Image" class="category-image">
         {% endfor %}
     </div>
     <!-- 그리드 스타일 정의 -->
+    <script>
+        function downloadCategory(categoryName) {
+            window.location.href = `/download/${categoryName}`;
+        }
+    </script>
 </body>
 </html>
