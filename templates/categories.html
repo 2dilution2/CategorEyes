@@ -2,21 +2,77 @@
 <html lang="ko">
 <head>
     <title>Categories</title>
-    <!-- 나머지 head 요소 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .category-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .category {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .category img {
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .category h2 {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <div>
         <h1>카테고리</h1>
-        {% for category, image_url in categories_info.items() %}
-        <div>
-            <h2>{{ category }}</h2>
-            <a href="/category_images/{{ category }}/{{ session_id }}">
-                <img src="{{ image_url }}" alt="{{ category }}" style="width: 100px;">
-            </a>
-            <!-- 다운로드 버튼 추가 -->
-            <button onclick="downloadCategory('{{ category }}')">Download {{ category }}</button>
+        <div class="category-container">
+            {% for category, image_url in categories_info.items() %}
+            <div class="category">
+                <h2>{{ category }}</h2>
+                <a href="/category_images/{{ category }}/{{ session_id }}">
+                    <img src="{{ image_url }}" alt="{{ category }}">
+                </a>
+                <button onclick="downloadCategory('{{ category }}')">다운로드 {{ category }}</button>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
     <script>
         function downloadCategory(categoryName) {

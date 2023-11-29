@@ -3,14 +3,52 @@
     <head>
         <!-- ... 나머지 head 요소 ... -->
         <style>
-            /* ... 스타일 정의 ... */
+            body {
+                text-align: center;
+            }
+    
+            button {
+                margin-top: 20px;
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+    
+            button:hover {
+                background-color: #45a049;
+            }
+    
+            .image-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 20px;
+            }
+    
+            .image-container img {
+                margin: 10px;
+                width: 128px;
+                height: 128px;
+                object-fit: cover;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                transition: 0.3s;
+            }
+    
+            .image-container img:hover {
+                border: 1px solid #4CAF50;
+            }
         </style>
     </head>
     <body>
-        <button onclick="redirectToCategories()">Classification</button>
+        <button onclick="redirectToCategories()">분류하기</button>
         <div class="image-container">
             {% for image_url in images %}
-                <img src="{{ image_url }}" alt="Image">
+                <img src="{{ image_url }}" alt="{{ category }}">
             {% endfor %}
         </div>
     
