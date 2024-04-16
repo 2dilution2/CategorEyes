@@ -1,0 +1,16 @@
+.app-header {
+    background: #98B1F6;
+    padding: 10px 0;
+    text-align: center;
+}
+  
+.app-logo {
+    height: 50px;
+}
+  
+.app-header-home {
+    background: #98B1F6;
+    padding: 10px 0;
+    height: 50px;
+    text-align: center;
+}

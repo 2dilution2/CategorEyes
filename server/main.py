@@ -1,11 +1,10 @@
 from ai_model.model_service import classify_image
 import os
 from aiohttp import ClientError
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, Request
+from fastapi import FastAPI, File, HTTPException, UploadFile, Request, APIRouter
 from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from typing import List
-from PIL import Image
 import io
 import zipfile
 from dotenv import load_dotenv
@@ -16,13 +15,21 @@ from datetime import datetime, timedelta
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 import uuid
-from base64 import b64encode
 
 load_dotenv()  # .env 파일에서 환경 변수들을 로드합니다.
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+
+# CORS 활성화
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 모든 도메인에서의 요청 허용
+    allow_credentials=True,
+    allow_methods=["*"],  # 모든 HTTP 메소드 허용
+    allow_headers=["*"],  # 모든 헤더 허용
+)
+
 s3_client = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('categoreyes')
@@ -82,9 +89,9 @@ def get_images_by_session_id(session_id: str):
         print(e.response['Error']['Message'])
         return []
 
-@app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/")
+def get_main_page():
+    return {"message": "메인페이지"}
 
 @app.post("/upload")
 async def upload_files(request: Request, files: List[UploadFile] = File(...)):
@@ -105,15 +112,15 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...)):
         save_url_to_dynamodb(request, file_url, file.filename, category)
 
     # 세션 ID를 포함하여 응답 반환    
-    return {"message": "Files uploaded successfully.", "session_id": session_id, "urls": urls}
+    return {"session_id": session_id, "urls": urls}
 
-@app.get("/uploaded_images/{session_id}", response_class=HTMLResponse)
-async def uploaded_images(request: Request, session_id: str):
+@app.get("/uploaded_images/{session_id}")
+async def uploaded_images(session_id: str):
     uploaded_images_urls = get_images_by_session_id(session_id)
-    return templates.TemplateResponse("uploaded_images.html", {"request": request, "uploaded_images_urls": uploaded_images_urls, "session_id": session_id})
+    return {"uploaded_images_urls": uploaded_images_urls, "session_id": session_id}
 
-@app.get("/categories/{session_id}", response_class=HTMLResponse)
-async def get_categories(request: Request, session_id: str):
+@app.get("/categories/{session_id}")
+async def get_categories(session_id: str):
     categories_info = {}
     for category in labels:
         response = table.scan(FilterExpression=Attr('Category').eq(category) & Attr('sessionID').eq(session_id))
@@ -121,26 +128,39 @@ async def get_categories(request: Request, session_id: str):
         if items:
             representative_image = items[0]['URL']
             categories_info[category] = representative_image
-    return templates.TemplateResponse("categories.html", {"request": request, "categories_info": categories_info, "session_id": session_id})
+    return {"categories_info": categories_info, "session_id": session_id}
+
+@app.get("/categories/{category_name}/{session_id}")
+async def get_category_images(category_name: str, session_id: str):
+    response = table.scan(
+        FilterExpression=Attr('Category').eq(category_name) & Attr('sessionID').eq(session_id)
+    )
+    items = response.get('Items', [])
+    images = [item['URL'] for item in items]
+    return {"category_name": category_name, "images": images, "session_id": session_id}
 
 @app.get("/download/{category_name}")
 async def download_category(category_name: str):
     items = table.scan(FilterExpression=Attr('Category').eq(category_name)).get('Items', [])
-    zip_filename = f"{category_name}.zip"
-    with zipfile.ZipFile(zip_filename, 'w') as zipf:
+    
+    # 임시 메모리에 zip 파일 생성
+    in_memory_zip = io.BytesIO()
+    
+    with zipfile.ZipFile(in_memory_zip, mode='w', compression=zipfile.ZIP_DEFLATED) as zipf:
         for item in items:
             url = item['URL']
             response = requests.get(url)
             if response.status_code == 200:
                 image_filename = url.split("/")[-1]
                 zipf.writestr(image_filename, response.content)
-    return StreamingResponse(open(zip_filename, 'rb'), media_type="application/zip")
-
-@app.get("/category_images/{category_name}/{session_id}", response_class=HTMLResponse)
-async def get_category_images(request: Request, category_name: str, session_id: str):
-    response = table.scan(
-        FilterExpression=Attr('Category').eq(category_name) & Attr('sessionID').eq(session_id)
-    )
-    items = response.get('Items', [])
-    images = [item['URL'] for item in items]
-    return templates.TemplateResponse("category_images.html", {"request": request, "category_name": category_name, "images": images, "session_id": session_id})
+    
+    # 포인터를 파일의 시작 부분으로 이동
+    in_memory_zip.seek(0)
+    
+    # 인 메모리 zip 파일의 내용을 S3 버킷에 업로드
+    zip_filename = f"{category_name}.zip"
+    s3_client.upload_fileobj(in_memory_zip, S3_BUCKET, zip_filename)
+    file_url = f"https://{S3_BUCKET}.s3.amazonaws.com/{zip_filename}"
+    
+    # 클라이언트가 다운로드할 수 있는 링크를 제공
+    return {"url": file_url}
