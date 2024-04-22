@@ -1,9 +1,7 @@
 from ai_model.model_service import classify_image
 import os
 from aiohttp import ClientError
-from fastapi import FastAPI, File, HTTPException, UploadFile, Request, APIRouter
-from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, File, HTTPException, UploadFile, Request
 from typing import List
 import io
 import zipfile
@@ -12,7 +10,6 @@ import requests
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from datetime import datetime, timedelta
-from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 import uuid
 
