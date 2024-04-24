@@ -1,5 +1,5 @@
 # 베이스 이미지 선택
-FROM node:20
+FROM node:18
 
 # 작업 디렉토리 생성
 WORKDIR /app
