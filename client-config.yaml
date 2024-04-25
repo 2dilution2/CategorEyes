@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: client-config
 data:
-  REACT_APP_API_BASE_URL: "http://<server-external-ip>:8000"
+  REACT_APP_API_BASE_URL: "http://34.97.57.248:8000"
