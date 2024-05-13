@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { fetchCategoriesBySession } from '../api/apiService';
 import '../assets/css/CategoryPage.css'; // 스타일은 별도의 CSS 파일로 관리
 
 const CategoryPage = () => {
   const { session_id } = useParams();
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate();
 
   const labelMap = {
     "a photo of a human": "인물",
