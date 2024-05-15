@@ -23,15 +23,16 @@ spec:
                 configMapKeyRef:
                   name: client-config
                   key: REACT_APP_API_BASE_URL
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              export REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
+              nginx -g 'daemon off;'
 ---
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: client-service
-spec:
-  selector:
-    app: client
-  ports:
-    - protocol: TCP
-      port: 80
-  type: LoadBalancer
+  name: client-config
+data:
+  REACT_APP_API_BASE_URL: "http://34.97.70.149:8000"
