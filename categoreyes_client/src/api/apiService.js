@@ -43,7 +43,7 @@ export const fetchCategoriesBySession = async(sessionId) => {
 
 export const fetchImagesByCategory = async (category, sessionId) => {
     try {
-        const response = await api.get(`/categories/${category}/${sessionId}`);
+        const response = await api.get(`/categories/${encodeURIComponent(category)}/${sessionId}`);
         return response.data;
       } catch (error) {
         console.error('Error fetching category images:', error);

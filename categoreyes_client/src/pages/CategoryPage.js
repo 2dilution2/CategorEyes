@@ -28,6 +28,10 @@ const CategoryPage = () => {
       .catch(error => console.error('Failed to fetch categories', error));
   }, [session_id]);
 
+  const formatCategoryName = (category) => {
+    return category.replace(/ /g, '_'); // 공백을 밑줄로 변환
+  };
+
   // const downloadCategory = (categoryName) => {
     // 다운로드 URL은 서버 구성에 따라 조정이 필요할 수 있습니다.
   //   navigate(`/download/${categoryName}`);
@@ -40,7 +44,7 @@ const CategoryPage = () => {
         {categories.map(({ category, imageUrl }, index) => (
           <div className="category" key={index}>
             <h2>{labelMap[category] || category}</h2> {/* 한글 레이블로 표시 */}
-            <a href={`/categories/${category}/${session_id}`}>
+            <a href={`/categories/${formatCategoryName(category)}/${session_id}`}>
               <img src={imageUrl} alt={category} />
             </a>
             {/* <button onClick={() => downloadCategory(category)}>다운로드 {labelMap[category] || category}</button> 한글 레이블로 표시 */}

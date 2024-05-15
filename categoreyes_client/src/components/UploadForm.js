@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const UploadForm = () => {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); 
   
   const onDrop = useCallback(acceptedFiles => {
@@ -17,6 +18,7 @@ const UploadForm = () => {
   }, []);
 
   const onSubmit = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
       files.forEach((file) => formData.append('files', file)); // 'files' 필드로 파일을 추가합니다.
@@ -29,6 +31,8 @@ const UploadForm = () => {
       }
     } catch (error) {
       console.error('Error uploading files:', error);
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -57,13 +61,16 @@ const UploadForm = () => {
       <div {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} />
         {files.length === 0 && (
-        <p>Drop files here or click to upload.</p>
+          <p>Drop files here or click to upload.</p>
         )}  
         <aside className="thumbsContainer">
           {thumbs}
         </aside>
       </div>
-      <button onClick={onSubmit} className="submit-button">Upload</button>
+      <button onClick={onSubmit} className="submit-button" disabled={loading}>
+        {loading ? 'Uploading...' : 'Upload'}
+      </button>
+      {loading && <div className="loading-spinner"></div>}
     </section>
   );
 };

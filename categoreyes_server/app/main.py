@@ -17,6 +17,9 @@ load_dotenv()  # .env 파일에서 환경 변수들을 로드합니다.
 
 app = FastAPI()
 
+def format_category_name(category: str) -> str:
+    return category.replace('_', ' ')  # 밑줄을 공백으로 변환
+
 # CORS 활성화
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
@@ -129,12 +132,13 @@ async def get_categories(session_id: str):
 
 @app.get("/categories/{category_name}/{session_id}")
 async def get_category_images(category_name: str, session_id: str):
+    formatted_category = format_category_name(category_name)
     response = table.scan(
-        FilterExpression=Attr('Category').eq(category_name) & Attr('sessionID').eq(session_id)
+        FilterExpression=Attr('Category').eq(formatted_category) & Attr('sessionID').eq(session_id)
     )
     items = response.get('Items', [])
     images = [item['URL'] for item in items]
-    return {"category_name": category_name, "images": images, "session_id": session_id}
+    return {"category_name": formatted_category, "images": images, "session_id": session_id}
 
 @app.get("/download/{category_name}")
 async def download_category(category_name: str):

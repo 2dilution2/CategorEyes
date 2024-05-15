@@ -4,6 +4,7 @@ import { HeaderHome } from '../components/Header';
 import '../assets/css/HomePage.css';
 
 const HomePage = () => {
+  console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
   return (
     <div>
         <HeaderHome />
