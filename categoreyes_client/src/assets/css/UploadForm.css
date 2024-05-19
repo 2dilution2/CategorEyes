@@ -61,13 +61,17 @@
 
 .dz-remove {
   background: red;
-  width: 50px;
+  width: 70px;
   height: 25px;
   border: none;
   border-radius: 25px;
   color: white;
   margin-top: 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .submit-button {
